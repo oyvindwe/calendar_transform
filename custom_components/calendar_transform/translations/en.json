@@ -1,0 +1,49 @@
+{
+  "title": "Calendar Transform",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add a transformed calendar",
+        "data": {
+          "name": "Name",
+          "source_entity": "Source calendar",
+          "pattern": "Regex pattern",
+          "replacement": "Replacement"
+        },
+        "data_description": {
+          "name": "Name of the new calendar entity.",
+          "source_entity": "The calendar whose events will be transformed.",
+          "pattern": "Python regex applied to each event's description (with re.MULTILINE). Must contain at least one capture group. If the pattern does not match, the original summary is kept.",
+          "replacement": "Template used to build the new summary, with backreferences like \\1, \\2 referring to the regex's capture groups. Leave empty to use the first capture group."
+        }
+      }
+    },
+    "error": {
+      "invalid_regex": "The regex pattern is not valid.",
+      "no_capture_group": "The pattern must contain at least one capture group, e.g. (.+).",
+      "invalid_backreference": "The replacement references a capture group that does not exist in the pattern."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Edit transformed calendar",
+        "data": {
+          "source_entity": "Source calendar",
+          "pattern": "Regex pattern",
+          "replacement": "Replacement"
+        },
+        "data_description": {
+          "source_entity": "The calendar whose events will be transformed.",
+          "pattern": "Python regex applied to each event's description (with re.MULTILINE). Must contain at least one capture group. If the pattern does not match, the original summary is kept.",
+          "replacement": "Template used to build the new summary, with backreferences like \\1, \\2 referring to the regex's capture groups. Leave empty to use the first capture group."
+        }
+      }
+    },
+    "error": {
+      "invalid_regex": "The regex pattern is not valid.",
+      "no_capture_group": "The pattern must contain at least one capture group, e.g. (.+).",
+      "invalid_backreference": "The replacement references a capture group that does not exist in the pattern."
+    }
+  }
+}

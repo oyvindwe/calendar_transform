@@ -1,0 +1,12 @@
+{
+  "domain": "calendar_transform",
+  "name": "Calendar Transform",
+  "codeowners": ["@oyvindwe"],
+  "config_flow": true,
+  "dependencies": ["calendar"],
+  "documentation": "https://github.com/oyvindwe/calendar_transform",
+  "integration_type": "helper",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/oyvindwe/calendar_transform/issues",
+  "version": "0.2.0"
+}

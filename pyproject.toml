@@ -1,0 +1,23 @@
+[project]
+name = "calendar-transform"
+version = "0.2.0"
+description = "Home Assistant integration that rewrites calendar event summaries via regex"
+readme = "README.md"
+requires-python = ">=3.14.2"
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.391",
+    "homeassistant-stubs==2026.5.4",
+    "pytest-homeassistant-custom-component==0.13.333",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.pyright]
+pythonVersion = "3.14"
+include = ["custom_components/calendar_transform"]
+typeCheckingMode = "basic"
