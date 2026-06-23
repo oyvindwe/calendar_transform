@@ -4,25 +4,29 @@
     "step": {
       "user": {
         "title": "Add a transformed calendar",
-        "description": "Wrap an existing calendar and rewrite each event's summary using a regex matched against the event's description.",
+        "description": "Wrap an existing calendar to rewrite event summaries and/or filter out events, based on regexes matched against each event's description. At least one of the substitute or filter patterns is required.",
         "data": {
           "name": "Name",
           "source_entity": "Source calendar",
-          "pattern": "Regex pattern",
-          "replacement": "Replacement"
+          "pattern": "Substitute pattern",
+          "replacement": "Replacement",
+          "blocklist": "Filter pattern"
         },
         "data_description": {
           "name": "Name of the new calendar entity.",
           "source_entity": "The calendar whose events will be transformed.",
-          "pattern": "Python regex applied to each event's description (with re.MULTILINE). Must contain at least one capture group. If the pattern does not match, the original summary is kept.",
-          "replacement": "Template used to build the new summary, with backreferences like \\1, \\2 referring to the regex's capture groups. Leave empty to use the first capture group."
+          "pattern": "Optional Python regex applied to each event's description (with re.MULTILINE). Must contain at least one capture group. The summary is replaced using the match; if the pattern does not match, the original summary is kept. Leave empty to only filter events.",
+          "replacement": "Template used to build the new summary, with backreferences like \\1, \\2 referring to the substitute pattern's capture groups. Leave empty to use the first capture group.",
+          "blocklist": "Optional Python regex applied to each event's description (with re.MULTILINE). Events whose description matches are hidden from this calendar. Leave empty to keep all events. Example: tasks\\.google\\.com/task/ hides Google Tasks."
         }
       }
     },
     "error": {
-      "invalid_regex": "The regex pattern is not valid.",
-      "no_capture_group": "The pattern must contain at least one capture group, e.g. (.+).",
-      "invalid_backreference": "The replacement references a capture group that does not exist in the pattern."
+      "pattern_or_blocklist_required": "Enter a substitute pattern, a filter pattern, or both.",
+      "invalid_regex": "The substitute pattern is not a valid regex.",
+      "no_capture_group": "The substitute pattern must contain at least one capture group, e.g. (.+).",
+      "invalid_backreference": "The replacement references a capture group that does not exist in the substitute pattern.",
+      "invalid_blocklist": "The filter pattern is not a valid regex."
     }
   },
   "options": {
@@ -31,20 +35,24 @@
         "title": "Edit transformed calendar",
         "data": {
           "source_entity": "Source calendar",
-          "pattern": "Regex pattern",
-          "replacement": "Replacement"
+          "pattern": "Substitute pattern",
+          "replacement": "Replacement",
+          "blocklist": "Filter pattern"
         },
         "data_description": {
           "source_entity": "The calendar whose events will be transformed.",
-          "pattern": "Python regex applied to each event's description (with re.MULTILINE). Must contain at least one capture group. If the pattern does not match, the original summary is kept.",
-          "replacement": "Template used to build the new summary, with backreferences like \\1, \\2 referring to the regex's capture groups. Leave empty to use the first capture group."
+          "pattern": "Optional Python regex applied to each event's description (with re.MULTILINE). Must contain at least one capture group. The summary is replaced using the match; if the pattern does not match, the original summary is kept. Leave empty to only filter events.",
+          "replacement": "Template used to build the new summary, with backreferences like \\1, \\2 referring to the substitute pattern's capture groups. Leave empty to use the first capture group.",
+          "blocklist": "Optional Python regex applied to each event's description (with re.MULTILINE). Events whose description matches are hidden from this calendar. Leave empty to keep all events. Example: tasks\\.google\\.com/task/ hides Google Tasks."
         }
       }
     },
     "error": {
-      "invalid_regex": "The regex pattern is not valid.",
-      "no_capture_group": "The pattern must contain at least one capture group, e.g. (.+).",
-      "invalid_backreference": "The replacement references a capture group that does not exist in the pattern."
+      "pattern_or_blocklist_required": "Enter a substitute pattern, a filter pattern, or both.",
+      "invalid_regex": "The substitute pattern is not a valid regex.",
+      "no_capture_group": "The substitute pattern must contain at least one capture group, e.g. (.+).",
+      "invalid_backreference": "The replacement references a capture group that does not exist in the substitute pattern.",
+      "invalid_blocklist": "The filter pattern is not a valid regex."
     }
   }
 }

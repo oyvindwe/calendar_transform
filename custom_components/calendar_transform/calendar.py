@@ -14,7 +14,12 @@ from homeassistant.core import Event, EventStateChangedData, HomeAssistant, call
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.event import async_track_state_change_event
 
-from .const import CONF_PATTERN, CONF_REPLACEMENT, CONF_SOURCE_ENTITY
+from .const import (
+    CONF_BLOCKLIST,
+    CONF_PATTERN,
+    CONF_REPLACEMENT,
+    CONF_SOURCE_ENTITY,
+)
 
 
 async def async_setup_entry(
@@ -29,8 +34,9 @@ async def async_setup_entry(
                 entry_id=entry.entry_id,
                 name=entry.options[CONF_NAME],
                 source_entity_id=entry.options[CONF_SOURCE_ENTITY],
-                pattern=entry.options[CONF_PATTERN],
+                pattern=entry.options.get(CONF_PATTERN, ""),
                 replacement=entry.options.get(CONF_REPLACEMENT, ""),
+                blocklist=entry.options.get(CONF_BLOCKLIST, ""),
             )
         ]
     )
@@ -44,15 +50,17 @@ class CalendarTransformEntity(CalendarEntity):
         entry_id: str,
         name: str,
         source_entity_id: str,
-        pattern: str,
-        replacement: str,
+        pattern: str = "",
+        replacement: str = "",
+        blocklist: str = "",
     ) -> None:
         """Initialize the entity."""
         self._attr_name = name
         self._attr_unique_id = entry_id
         self._source_entity_id = source_entity_id
-        self._pattern = re.compile(pattern, re.MULTILINE)
+        self._pattern = re.compile(pattern, re.MULTILINE) if pattern else None
         self._replacement = replacement or r"\1"
+        self._blocklist = re.compile(blocklist, re.MULTILINE) if blocklist else None
 
     async def async_added_to_hass(self) -> None:
         """Subscribe to source state changes so our state updates immediately."""
@@ -75,9 +83,15 @@ class CalendarTransformEntity(CalendarEntity):
         """Return the source CalendarEntity, or None if it isn't available."""
         return self.hass.data[DATA_COMPONENT].get_entity(self._source_entity_id)
 
+    def _is_blocked(self, event: CalendarEvent) -> bool:
+        """Return True if the event's description matches the blocklist."""
+        if self._blocklist is None or not event.description:
+            return False
+        return self._blocklist.search(event.description) is not None
+
     def _transform(self, event: CalendarEvent) -> CalendarEvent:
         """Replace the summary if the regex matches the description."""
-        if not event.description:
+        if self._pattern is None or not event.description:
             return event
         match = self._pattern.search(event.description)
         if match is None:
@@ -95,6 +109,8 @@ class CalendarTransformEntity(CalendarEntity):
         """Return the current/next event from the source, transformed."""
         source = self._get_source()
         if source is None or source.event is None:
+            return None
+        if self._is_blocked(source.event):
             return None
         return self._transform(source.event)
 
@@ -115,4 +131,8 @@ class CalendarTransformEntity(CalendarEntity):
         if source is None:
             return []
         events = await source.async_get_events(hass, start_date, end_date)
-        return [self._transform(event) for event in events]
+        return [
+            self._transform(event)
+            for event in events
+            if not self._is_blocked(event)
+        ]

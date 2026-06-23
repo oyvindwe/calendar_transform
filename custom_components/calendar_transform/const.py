@@ -9,3 +9,4 @@ PLATFORMS = [Platform.CALENDAR]
 CONF_SOURCE_ENTITY = "source_entity"
 CONF_PATTERN = "pattern"
 CONF_REPLACEMENT = "replacement"
+CONF_BLOCKLIST = "blocklist"
