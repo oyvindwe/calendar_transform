@@ -4,6 +4,8 @@ A Home Assistant helper integration that wraps an existing calendar entity and r
 
 Useful when you display a public, read-only calendar whose summaries are not the text you want to render — but the desired text is buried inside the description.
 
+[![BuyMeCoffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/oyvindwev)
+
 ## Example
 
 A football match calendar provides events like:
